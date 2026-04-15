@@ -1,0 +1,30 @@
+Wymagania funkcjonalne:
+
+- Tworzenie wydarzenia i wybór jego typu np. wyjście, sport.
+
+- Proponowanie terminów lub przedziałów czasowych przez organizatora.
+
+- Ustalanie minimalnej liczby osób potrzebnej do spotkania.
+
+- Blokowanie w kalendarzu godzin niedostępnych przez uczestników.
+
+- Głosowanie na pasujące terminy i proponowanie własnych godzin.
+
+- Widoczność listy osób potwierdzonych w poszczególnych terminach.
+
+- Automatyczne wskazywanie przez system terminu o najwyższej frekwencji.
+
+- Ręczne zatwierdzanie finalnej daty przez organizatora.
+
+- System powiadomień wynik głosowania, przypomnienia o spotkaniu.
+
+
+Wymagania niefunkcjonalne i techniczne:
+
+- Intuicyjny, responsywny interfejs kalendarza.
+
+- Poprawne działanie na urządzeniach mobilnych i komputerach.
+
+- Szybkie działanie algorytmu wyliczającego optymalny termin.
+
+- Standardy implementacji w Javie: ścisła hermetyzacja, zawsze zmienne private i udostępnianie getterów.
