@@ -1,0 +1,102 @@
+TEMAT PROJEKTU: Aplikacja do planowania spotkań ze znajomymi
+
+1. TWORZENIE NOWEGO WYDARZENIA (ORGANIZATOR)
+
+Jako Organizator chcę utworzyć nowe wydarzenie i zaproponować zakresy dat/godzin, aby moi znajomi mogli określić swoją dostępność.
+
+Cel: 
+Umożliwienie użytkownikowi zainicjowania spotkania z określeniem szczegółów (nazwa, opis) oraz ram czasowych do głosowania.
+
+Kryteria Akceptacji:
+a) Funkcjonalne:
+- Warunki wstępne: Użytkownik jest zalogowany do systemu.
+- Formularz zawiera pola: Nazwa wydarzenia (wymagane), Opis (opcjonalne), Lokalizacja (opcjonalne).
+- Interfejs pozwala wybrać co najmniej jedną lub więcej sugerowanych dat/godzin spotkania.
+- System umożliwia zaproszenie znajomych poprzez listę kontaktów w aplikacji lub wygenerowanie unikalnego linku.
+- Walidacja: Próba zapisu bez nazwy lub bez wybrania terminów skutkuje błędem.
+
+b) Niefunkcjonalne:
+- Dodawanie terminów w kalendarzu powinno być intuicyjne (np. poprzez kliknięcie i przeciągnięcie).
+- Dane o nowym wydarzeniu muszą zostać zapisane w bazie danych natychmiast po kliknięciu "Utwórz".
+
+Scenariusze testowe:
+
+Prawidłowe utworzenie wydarzenia:
+Given: Organizator jest zalogowany i ma otwarty formularz nowego wydarzenia.
+When: Wypełnia nazwę "Wyjście na kręgle", wybiera 3 różne daty i klika "Utwórz".
+Then: Wydarzenie zostaje zapisane ze statusem "W trakcie ustalania", a organizator widzi panel zarządzania terminami.
+
+Próba zapisu pustego formularza:
+Given: Organizator ma otwarty nowy formularz wydarzenia.
+When: Nie wpisuje nazwy, nie wybiera terminów i klika "Utwórz".
+Then: System wyświetla komunikat "Nazwa wydarzenia i przynajmniej jeden termin są wymagane", dokument nie zostaje zapisany.
+
+---------------------------------------------------------------------------
+
+2. WPROWADZANIE DOSTĘPNOŚCI (ZAPROSZONY ZNAJOMY)
+
+Jako Zaproszony chcę zaznaczyć, w których z zaproponowanych terminów mogę się pojawić, aby pomóc w wyborze najlepszej daty.
+
+Cel: 
+Zebranie deklaracji dostępności od wszystkich zaproszonych osób w celu znalezienia wspólnego terminu.
+
+Kryteria Akceptacji:
+a) Funkcjonalne:
+- Warunki wstępne: Użytkownik otrzymał zaproszenie i jest zalogowany.
+- System wyświetla listę wszystkich terminów zaproponowanych przez organizatora.
+- Dla każdego terminu użytkownik może wybrać status: "Pasuje mi" lub "Nie pasuje".
+- System umożliwia zapisanie i późniejszą edycję swoich odpowiedzi (aż do finalizacji wydarzenia).
+- System automatycznie sumuje głosy pod każdym terminem.
+
+b) Niefunkcjonalne:
+- Interfejs tabeli dostępności musi być czytelny i responsywny (dostosowany do telefonów).
+- Każda zmiana dostępności powinna być widoczna dla innych uczestników w czasie rzeczywistym.
+
+Scenariusze testowe:
+
+Pomyślne zaznaczenie dostępności:
+Given: Zaproszony otworzył link do wydarzenia "Kręgle".
+When: Zaznacza opcję "Pasuje mi" przy dwóch z trzech terminów i klika "Zapisz".
+Then: Jego imię pojawia się przy wybranych datach, a licznik osób dostępnych w tych terminach zwiększa się o 1.
+
+Zmiana wcześniejszej decyzji:
+Given: Zaproszony wcześniej zaznaczył, że pasuje mu piątek o 18:00.
+When: Zmienia status na "Nie pasuje" i klika "Aktualizuj".
+Then: System usuwa imię użytkownika z danej sekcji i aktualizuje wynik zbiorczy dla tego terminu.
+
+---------------------------------------------------------------------------
+
+3. FINALIZACJA TERMINU I POWIADOMIENIA
+
+Jako Organizator chcę zatwierdzić najlepiej pasujący termin (wskazany przez algorytm), aby zakończyć planowanie i powiadomić wszystkich o finale.
+
+Cel: 
+Oficjalne zakończenie zbierania głosów i potwierdzenie daty spotkania.
+
+Kryteria Akceptacji:
+a) Funkcjonalne:
+- Warunki wstępne: Przynajmniej jeden zaproszony gość wypełnił swoją dostępność.
+- System automatycznie analizuje dane i oznacza termin z największą liczbą głosów ikoną "Zwycięzca".
+- Organizator ma przycisk "Zatwierdź termin" (może wybrać sugerowany lub dowolny inny).
+- Po zatwierdzeniu, system zmienia status wydarzenia na "Zaplanowane".
+- System wysyła powiadomienie (Push/E-mail) do wszystkich zaproszonych o wybranym terminie.
+
+b) Niefunkcjonalne:
+- Czas wysłania powiadomień do wszystkich uczestników nie powinien przekroczyć 5 sekund od kliknięcia przycisku.
+
+Scenariusze testowe:
+
+Wybór zwycięskiego terminu:
+Given: Termin "Sobota 19:00" ma najwięcej głosów (100% obecności).
+When: Organizator klika przycisk "Zatwierdź ten termin".
+Then: System blokuje możliwość dalszego głosowania, wysyła powiadomienia do grupy i przenosi wydarzenie do kalendarza "Nadchodzące".
+
+Obsługa remisu:
+Given: Dwa terminy mają po tyle samo głosów (najwięcej w tabeli).
+When: Organizator przegląda wyniki.
+Then: Algorytm podświetla oba terminy jako "Najlepsze opcje", pozostawiając ostateczną decyzję organizatorowi.
+
+Weryfikacja blokady głosowania:
+Given: Organizator zatwierdził termin spotkania.
+When: Zaproszony znajomy próbuje zmienić swoją dostępność.
+Then: System nie pozwala na edycję i wyświetla komunikat "To wydarzenie zostało już sfinalizowane".
