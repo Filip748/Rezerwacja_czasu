@@ -1,0 +1,14 @@
+Osoba 1:
+Aplikacja wygląda dobrze i zachęcająco, ale brakuje mi możliwości sprawdzenia swoich grup do jakich należę.
+
+Osoba 2:
+Wygląd strony jej sie podobał i po szybkim przeklikaniu przez funkcjonalność systemu uznał że nic by nie zmieniał 
+
+Osoba 3:
+Nie była za bardzo przkenona na początku i powiedziała że należy dodać możliwość dodawania nowych grup oraz wyświetlenia do jakich grup się należy
+
+Osoba 4:
+Zauważyła że nie ma panelu do logowania i wylogowania oraz nie da się stworzyć nowych grup
+
+Osoba 5:
+Doradziła nam by przy dodawaniu wydarzeń była możliwość dodaniu kilku dat naraz
