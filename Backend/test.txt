@@ -1,0 +1,55 @@
+1. WybieraNajlepszyTerminGdyJestKworum (Happy Path)
+
+    Cel: Sprawdzenie najbardziej pożądanego scenariusza (Idealne dopasowanie).  
+
+Konfiguracja: Wydarzenie wymaga minimum 3 osób. Dodane są dwa terminy (T1 i T2). T1 otrzymuje 4 głosy, T2 otrzymuje 1 głos.
+
+Oczekiwany wynik: Algorytm poprawnie identyfikuje T1 jako zwycięzcę, ponieważ ma najwięcej głosów i przekracza wymagane kworum. System automatycznie wybiera ten termin i wysyła powiadomienie push do uczestników o ustaleniu daty. Status wydarzenia zmienia się na ZATWIERDZONE.  
+
+2. OznaczaJakoWymagaUwagiPrzyBrakuKworum
+
+    Cel: Weryfikacja działania systemu, gdy frekwencja dopisze poniżej oczekiwań.  
+
+Konfiguracja: Wydarzenie wymaga aż 10 uczestników. Dodany jest jeden termin, który po upływie deadline'u zbiera tylko 5 głosów (lub np. 8 głosów ).  
+
+Oczekiwany wynik: System nie zatwierdza terminu. Zamiast tego oznacza wydarzenie statusem Wymaga uwagi i wysyła zapytanie do Organizatora, czy chce zorganizować spotkanie pomimo braku kworum, czy woli je anulować.  
+
+3. ZglaszaRemisGdyDwaTerminyMajaTyleSamoGlosow
+
+    Cel: Obsługa sytuacji spornych, gdzie głosy rozkładają się po równo.  
+
+Konfiguracja: Wydarzenie wymaga minimum 2 osób. Mamy dwa terminy (T1 i T2), z których oba otrzymują dokładnie taką samą liczbę głosów, np. po 3 głosy (lub po 6 głosów ).  
+
+Oczekiwany wynik: Algorytm wykrywa remis. System nie podejmuje decyzji samodzielnie, lecz zatrzymuje proces, zmienia status na OCZEKUJE_NA_ORGANIZATORA i wysyła alert do Organizatora z prośbą o ostateczny wybór między terminami.  
+
+4. IgnorujeZamykanieGdyBrakProponowanychTerminow (Przypadek brzegowy)
+
+    Cel: Zabezpieczenie przed tzw. "wyjątkiem pustej listy" (np. gdy ktoś za szybko kliknie przycisk zakończenia głosowania na UI).
+
+    Konfiguracja: Zostaje utworzone wydarzenie, ale Organizator nie dodaje absolutnie żadnych propozycji czasowych przed zakończeniem ankiety.
+
+    Oczekiwany wynik: Algorytm w ogóle nie zaczyna przetwarzać danych. Cicho kończy działanie, nie wysyłając żadnych powiadomień. Status pozostaje bez zmian (VOTING_IN_PROGRESS).
+
+5. AkceptujeTerminGdyKworumJestDokladnieSpelnione (Przypadek brzegowy)
+
+    Cel: Test "na granicy" warunku matematycznego. Sprawdzenie, czy system używa prawidłowego operatora (większe bądź równe >=).
+
+    Konfiguracja: Wydarzenie wymaga dokładnie 3 osób do startu. Najpopularniejszy termin zbiera dokładnie 3 głosy.
+
+    Oczekiwany wynik: Termin musi zostać zakwalifikowany jako poprawny. Wydarzenie otrzymuje status ZATWIERDZONE, a powiadomienie Push zostaje wysłane. System nie może żądać akcji od Organizatora z powodu rzekomego braku frekwencji.
+
+6. ZglaszaBrakKworumGdyNiktNieOddalGlosu
+
+    Cel: Ochrona przed fałszywym wybraniem pierwszego lepszego terminu przy totalnym braku zaangażowania uczestników.
+
+    Konfiguracja: Mamy 2 terminy, wymagane są 2 osoby do startu. Rejestrujemy dokładnie 0 głosów dla każdej z propozycji.
+
+    Oczekiwany wynik: Algorytm widzi 0 jako maksymalną liczbę i poprawnie weryfikuje, że jest to poniżej wymaganego kworum. Status wydarzenia to WYMAGA_UWAGI z zapytaniem do Organizatora o dalsze kroki.  
+
+7. WybieraPoprawnyTerminNiezaleznieOdKolejnosciDodania
+
+    Cel: Weryfikacja logiczna "najlepszego wyniku" w wektorze danych.
+
+    Konfiguracja: Do wydarzenia dodawane są po kolei 3 różne terminy. Zdecydowanym faworytem uczestników staje się termin dodany jako ostatni (znajdujący się na końcu listy).
+
+    Oczekiwany wynik: Mimo swojej pozycji w wektorze, termin nr 3 zostaje poprawnie zidentyfikowany jako zwycięzca. Daje to gwarancję, że algorytm przeszukuje całą dostępną pulę, a nie zatrzymuje się na pierwszym rekordzie. Powiadomienie push zostaje wysłane z poprawnym przedziałem czasowym.
